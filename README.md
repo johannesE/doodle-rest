@@ -33,8 +33,9 @@ AND default_validation_class = UTF8Type;
 Listing the node(s): New terminal in the bin folder:
 nodetool ring (returns: 
 
-Datacenter: datacenter1
 ==========
+Datacenter: datacenter1
+
 Replicas: 1
 
 Address    Rack        Status State   Load            Owns                Token                                       
@@ -50,6 +51,7 @@ Then again with the nodetool: "nodetool compact K1"
 "describe cluster" returns the schema version
 
 
+Project / Service
 ==================
 
 
