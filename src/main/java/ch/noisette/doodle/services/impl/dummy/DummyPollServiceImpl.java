@@ -3,7 +3,9 @@ package ch.noisette.doodle.services.impl.dummy;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.cassandra.thrift.*;
 import org.apache.log4j.Logger;
+import org.apache.thrift.protocol.*;
 import org.springframework.stereotype.Service;
 
 import ch.noisette.doodle.domains.Poll;
