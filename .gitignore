@@ -36,3 +36,9 @@ local.properties
 
 # Locally stored "Eclipse launch configurations"
 *.launch
+/target/
+
+.project
+target/*
+WebContent/*
+*.kate-swp

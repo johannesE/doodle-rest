@@ -30,7 +30,7 @@ public class RESTBasicTest
         // poll.setId( null ); id is returned by the REST API, not set manually.
         poll.setEmail("email@address.com");
         
-        poll.setLabel("Afterwork");
+        poll.setLabel("Afterwork beer");
         poll.setMaxChoices(1);
         
         @SuppressWarnings("serial")
