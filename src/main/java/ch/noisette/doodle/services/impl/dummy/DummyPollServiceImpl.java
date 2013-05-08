@@ -51,6 +51,18 @@ public class DummyPollServiceImpl implements PollService {
         tr.close();
         }
         
+        private void setkeyspace(String keyspace) {
+
+try {
+client.set_keyspace(keyspace);
+} catch (InvalidRequestException e) {
+System.out.println("No such Keyspace available.");
+e.printStackTrace();
+} catch (TException e) {
+e.printStackTrace();
+}
+
+}        
 	@Override
 	public Poll getPollById(String pollId) {
 		// TODO Auto-generated method stub
