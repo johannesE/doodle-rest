@@ -1,6 +1,5 @@
 package ch.noisette.doodle.services.impl.dummy;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.cassandra.thrift.*;
@@ -10,8 +9,11 @@ import org.springframework.stereotype.Service;
 import ch.noisette.doodle.domains.Poll;
 import ch.noisette.doodle.domains.Subscriber;
 import ch.noisette.doodle.services.PollService;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.UUID;
 import java.util.logging.Level;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -30,7 +32,6 @@ public class DummyPollServiceImpl implements PollService {
         private final static int DB_PORT = 9160;
         private final static String UTF8 = "UTF-8";
         private Cassandra.Client client;
-        private TTransport tr;
         
 
 	private static final Logger logger_c = Logger.getLogger(DummyPollServiceImpl.class);
@@ -39,7 +40,7 @@ public class DummyPollServiceImpl implements PollService {
             
             TTransport tr = new TFramedTransport(new TSocket(DB_HOST, DB_PORT));
             TProtocol protocol  = new TBinaryProtocol(tr);
-            Cassandra.Client client = new Cassandra.Client(protocol);
+            client = new Cassandra.Client(protocol);
             try {
                 tr.open();
             } catch (TTransportException ex) {
@@ -56,7 +57,9 @@ public class DummyPollServiceImpl implements PollService {
         }
         
         private void closeDBconnection() {
-        tr.close();
+            if(client != null){
+                client.getOutputProtocol().getTransport().close();
+            }
         }
         
         private void setkeyspace(String keyspace) {
@@ -116,8 +119,62 @@ public class DummyPollServiceImpl implements PollService {
 
 	@Override
 	public Poll createPoll(Poll poll) {
-		// TODO Auto-generated method stub
-		return null;
+            openDBconnection();
+            String pollID = UUID.randomUUID().toString();
+            poll.setId(pollID);
+            Column column = new Column();
+            
+            long timestamp = System.currentTimeMillis();
+            ColumnParent columnParent = new ColumnParent("stats");
+            try {
+                
+                column.setValue(poll.getLabel().toString().getBytes());
+                column.setName("poll_name".getBytes());
+                column.setTimestamp(timestamp);
+            
+                client.insert(makeByteBuffer(pollID), columnParent, column, ConsistencyLevel.ONE);
+                
+                
+                column.setValue(poll.getChoices().toString().getBytes());
+                column.setName("poll_choices".getBytes());
+                column.setTimestamp(timestamp);
+            
+                client.insert(makeByteBuffer(pollID), columnParent, column, ConsistencyLevel.ONE);    
+                
+                column.setValue(poll.getEmail().toString().getBytes());
+                column.setName("poll_creator_email".getBytes());
+                column.setTimestamp(timestamp);
+            
+                client.insert(makeByteBuffer(pollID), columnParent, column, ConsistencyLevel.ONE);
+                
+                column.setValue(poll.getMaxChoices().toString().getBytes());
+                column.setName("poll_max_choices".getBytes());
+                column.setTimestamp(timestamp);
+            
+                client.insert(makeByteBuffer(pollID), columnParent, column, ConsistencyLevel.ONE);
+                
+                column.setValue(poll.getSubscribers().toString().getBytes());
+                column.setName("poll_subscribers".getBytes());
+                column.setTimestamp(timestamp);
+            
+                client.insert(makeByteBuffer(pollID), columnParent, column, ConsistencyLevel.ONE);
+                
+                } catch (InvalidRequestException ex) {
+                    java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnavailableException ex) {
+                    java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (TimedOutException ex) {
+                    java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (TException ex) {
+                    java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnsupportedEncodingException ex) {
+                    java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+            System.out.println("Successfully created the poll with the id "+ pollID);
+            closeDBconnection();
+            return poll;
 	}
 
 	@Override
@@ -131,6 +188,11 @@ public class DummyPollServiceImpl implements PollService {
 		// TODO Auto-generated method stub
 
 	}
+
+    private ByteBuffer makeByteBuffer(String toByte)
+                throws UnsupportedEncodingException {
+        return ByteBuffer.wrap(toByte.getBytes(UTF8));
+}
 
 
 
