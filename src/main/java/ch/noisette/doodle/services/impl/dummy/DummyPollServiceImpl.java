@@ -63,8 +63,24 @@ public class DummyPollServiceImpl implements PollService {
         
 	@Override
 	public Poll getPollById(String pollId) {
-		// TODO Auto-generated method stub
-		return null;
+		openDBconnection();
+                Poll foundPoll = null;
+                List<Poll> polls = new LinkedList<Poll>();
+                
+                polls = getAllPolls(); //this is not the most efficient solution (at all)
+                //but it's 4:35 in the morning and we don't have that many polls yet..
+                
+                for(Poll poll : polls){
+                    if(poll.getId().equals(pollId)){
+                        closeDBconnection();
+                        return poll;
+                    }
+                }
+                
+                
+                closeDBconnection();
+                System.out.println("Poll not found. :-(");
+                return null;
 	}
 
 	@Override
