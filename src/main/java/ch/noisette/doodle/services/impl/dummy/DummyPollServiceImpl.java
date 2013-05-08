@@ -192,25 +192,28 @@ public class DummyPollServiceImpl implements PollService {
             client.insert(ByteBuffer.wrap(pollId.getBytes("UTF-8")), cp, cLabel,
             ConsistencyLevel.QUORUM);
 
-        } catch (UnsupportedEncodingException |
-            TimedOutException | 
-            UnavailableException |
-            InvalidRequestException |
-            TException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
+        } catch (TimedOutException e) {
+            e.printStackTrace();
+        } catch (InvalidRequestException e) {
+            e.printStackTrace();
+        } catch (UnavailableException e) {
+            e.printStackTrace();
+        } catch (TException e) {
+            e.printStackTrace();
+}
 
-Poll poll = new Poll();
-poll.setChoices(subscriber.getChoices());
-poll.setLabel(subscriber.getLabel());
-poll.setId(pollId);
+        Poll poll = new Poll();
+        poll.setChoices(subscriber.getChoices());
+        poll.setLabel(subscriber.getLabel());
+        poll.setId(pollId);
 
-closeDBconnection();
+        closeDBconnection();
 
-return poll;
+        return poll;
 
 }
-	}
 
 	@Override
 	public void deletePoll(String pollId) {
