@@ -33,7 +33,7 @@ public class DummyPollServiceImpl implements PollService {
 
 	private static final Logger logger_c = Logger.getLogger(DummyPollServiceImpl.class);
         
-        private void openDBconnection()throws TTransportException,
+        private synchronized void openDBconnection()throws TTransportException,
                 UnsupportedEncodingException, InvalidRequestException, 
                 NotFoundException, UnavailableException, TimedOutException, 
                 TException, AuthenticationException, AuthorizationException {
