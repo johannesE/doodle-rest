@@ -60,15 +60,18 @@ public class DummyPollServiceImpl implements PollService {
         }
         
         private void setkeyspace(String keyspace) {
+            
+            try {
+                client.set_keyspace(keyspace);
+            } catch (InvalidRequestException ex) {
+                java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("No such Keyspace available.");
+            } catch (TException ex) {
+                java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
-try {
-client.set_keyspace(keyspace);
-} catch (InvalidRequestException e) {
-System.out.println("No such Keyspace available.");
-e.printStackTrace();
-} catch (TException e) {
-e.printStackTrace();
-}
+                   
+
 
 }        
 	@Override
