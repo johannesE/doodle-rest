@@ -28,6 +28,7 @@ public class DummyPollServiceImpl implements PollService {
         private final static int DB_PORT = 9160;
         private final static String UTF8 = "UTF-8";
         private Cassandra.Client client;
+        private TTransport tr
         private boolean isConnected = false;
         
 
@@ -44,6 +45,10 @@ public class DummyPollServiceImpl implements PollService {
             tr.open();
             client.set_keyspace(DB_KEYSPACE);
             isConnected = true;
+        }
+        
+        private void closeDBconnection() {
+        tr.close();
         }
         
 	@Override
