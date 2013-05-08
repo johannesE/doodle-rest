@@ -204,9 +204,11 @@ Poll poll = new Poll();
 poll.setChoices(subscriber.getChoices());
 poll.setLabel(subscriber.getLabel());
 poll.setId(pollId);
-return poll;
 
 closeDBconnection();
+
+return poll;
+
 }
 	}
 
@@ -218,7 +220,7 @@ closeDBconnection();
 
     private ByteBuffer makeByteBuffer(String toByte)
                 throws UnsupportedEncodingException {
-        return ByteBuffer.wrap(toByte.getBytes(UTF8));
+        return ByteBuffer.wrap(toByte.getBytes("UTF-8"));
 }
 
 
