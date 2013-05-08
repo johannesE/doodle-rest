@@ -61,21 +61,6 @@ public class DummyPollServiceImpl implements PollService {
             }
         }
         
-        private void setkeyspace(String keyspace) {
-            
-            try {
-                client.set_keyspace(keyspace);
-            } catch (InvalidRequestException ex) {
-                java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("No such Keyspace available.");
-            } catch (TException ex) {
-                java.util.logging.Logger.getLogger(DummyPollServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-                   
-
-
-}        
 	@Override
 	public Poll getPollById(String pollId) {
 		// TODO Auto-generated method stub
@@ -179,7 +164,6 @@ public class DummyPollServiceImpl implements PollService {
 	@Override
 	public Poll addSubscriber(String pollId, Subscriber subscriber) {
 		openDBconnection();
-                setkeyspace(DB_KEYSPACE);
 
         try {
 
