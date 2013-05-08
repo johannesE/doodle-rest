@@ -30,7 +30,6 @@ public class DummyPollServiceImpl implements PollService {
         private final static String DB_KEYSPACE = "doodle";
     	private final static String DB_HOST = "localhost";
         private final static int DB_PORT = 9160;
-        private final static String UTF8 = "UTF-8";
         private Cassandra.Client client;
         
 
@@ -179,8 +178,36 @@ public class DummyPollServiceImpl implements PollService {
 
 	@Override
 	public Poll addSubscriber(String pollId, Subscriber subscriber) {
-		// TODO Auto-generated method stub
-		return null;
+		openDBconnection();
+                setkeyspace(DB_KEYSPACE);
+
+        try {
+
+            ColumnParent cp = new ColumnParent("outgoers");
+            long timestamp = System.currentTimeMillis();
+            Column cLabel = new Column();
+            cLabel.setTimestamp(timestamp);
+            cLabel.setName(subscriber.getLabel().getBytes("UTF-8"));
+            cLabel.setValue(subscriber.getChoices().toString().getBytes("UTF-8"));
+            client.insert(ByteBuffer.wrap(pollId.getBytes("UTF-8")), cp, cLabel,
+            ConsistencyLevel.QUORUM);
+
+        } catch (UnsupportedEncodingException |
+            TimedOutException | 
+            UnavailableException |
+            InvalidRequestException |
+            TException e) {
+            e.printStackTrace();
+        }
+
+Poll poll = new Poll();
+poll.setChoices(subscriber.getChoices());
+poll.setLabel(subscriber.getLabel());
+poll.setId(pollId);
+return poll;
+
+closeDBconnection();
+}
 	}
 
 	@Override
