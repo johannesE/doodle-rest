@@ -58,4 +58,23 @@ Project / Service
 In order to run the project, you have to set up a tomcat server on port 8080. Otherwise the tests won't pass.
 
 
+Database SetUp
+==============
 
+[default@unknown] CREATE KEYSPACE doodle
+WITH placement_strategy = 'org.apache.cassandra.locator.SimpleStrategy'
+AND strategy_options = {replication_factor:1};
+
+[default@unknown] use doodle;
+
+[default@doodle] CREATE COLUMN FAMILY stats
+WITH comparator = AsciiType
+AND key_validation_class=AsciiType
+AND default_validation_class = UTF8Type;
+
+[default@doodle] CREATE COLUMN FAMILY outgoers
+WITH comparator = AsciiType
+AND key_validation_class=AsciiType
+AND default_validation_class = UTF8Type;
+
+With these commands the Database we use is created.
